@@ -1,13 +1,15 @@
 <script setup>
-    import { RouterLink, useRouter } from 'vue-router';
     import { ref } from 'vue';
+    import { RouterLink, useRouter } from 'vue-router';
+    const router = useRouter();
+
+    import { useToast } from "vue-toastification";
+    const toast = useToast()
 
     import Users from '../Users.vue';
 
     import { useUserStore } from '../../stores/user';
     const userStore = useUserStore();    
-
-    const router = useRouter();
 
     const email = ref('');
     const password = ref('');
@@ -34,22 +36,28 @@
                 body: formData,
             });
 
+            
             if (!response.ok) {
                 if (response.status == 401) {
+                    toast.error("Neplatné přihlašovací údaje.");
                     throw new Error("Neplatné přihlašovací údaje."); //funguje i jako return
                 } 
                 if (response.status == 403) {
+                    toast.error("Uživatel je zablokován.");
                     throw new Error("Uživatel je zablokován."); 
                 }
-                throw new Error('Chyba při přihlašování!');
+                toast.error("Chyba při přihlašování.");
+                throw new Error('Chyba při přihlašování.');
             }
             
             const data = await response.json();
             if (data.access_token) {
                 userStore.setAccessToken(data.access_token);
                 router.go(-1); //vrátí se na předchozí stránku před přihlášením
+                toast.success("Přihlášení úspěšné, vítejte...");
             } else {
-                console.log ("Neplatné přihlašovací údaje.") //dodělat toast
+                toast.error("Neplatné příhlášení...");
+                console.log ("Neplatné příhlášení...");
             }
         } catch (error) {
             console.error('Chyba:', error.message);

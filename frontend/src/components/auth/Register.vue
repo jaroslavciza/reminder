@@ -1,11 +1,14 @@
 <script setup>
     import { ref } from 'vue';
-    import { useRouter } from 'vue-router'
 
+    import { useRouter } from 'vue-router'
+    const router = useRouter();
+
+    import { useToast } from "vue-toastification";
+    const toast = useToast()
+    
     import { useUserStore } from '../../stores/user';
     const userStore = useUserStore();
-
-    const router = useRouter();
     
     const email = ref('');
     const password = ref('');
@@ -36,9 +39,11 @@
                 const data = await response.json();
                 if (data.access_token) {
                     userStore.setAccessToken(data.access_token);
+                    toast.success("Registrace proběhla úspěšně.");
                     router.push('/');
                 }
             } else {
+                toast.error("Neznámá chyba při registraci.");
                 console.error("Neznámá chyba při registraci.");
             }
             // const data = await response.json();

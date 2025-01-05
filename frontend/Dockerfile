@@ -16,6 +16,9 @@ COPY . .
 # Vytvoření produkční verze aplikace (static build)
 RUN npm run build
 
+# instalace toast knihovny - bude reseno pres package.json
+#RUN npm install --save vue-toastification@next
+
 
 # Druhá fáze: Servírování aplikace pomocí Nginx
 FROM nginx:alpine AS production-stage

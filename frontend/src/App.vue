@@ -1,17 +1,19 @@
 <script setup>
-    import { RouterLink, RouterView, useRouter } from 'vue-router'
-
     import { onMounted } from 'vue';
+    import { RouterLink, RouterView, useRouter } from 'vue-router'
+    const router = useRouter();
+
+    import { useToast } from "vue-toastification";
+    const toast = useToast()
 
     import { useUserStore } from './stores/user';
     const userStore = useUserStore();
-
-    const router = useRouter();
 
     import DarkModeSwitcher from './components/DarkModeSwitcher.vue';
 
     const logout = () => {
         userStore.removeAccessToken();
+        toast.success("Odhlášení proběhlo úspěšně.")
         //router.push('/login'); // redirect na login stranku
         router.push('/');
     };
@@ -85,4 +87,8 @@
         text-decoration: none;
         /* color: var(--bs-primary); */
     }
+
+    /* .top-right {
+        margin-top: 30px;
+    } */
 </style>
