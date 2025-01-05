@@ -48,12 +48,11 @@ jobs:
 
     - name: Build and push backend Docker image
       run: |
-        docker build \
+        docker build -t ghcr.io/${{ github.repository }}/backend:latest ./backend \
           --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }} \
+          --build-arg POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
           --build-arg POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
           --build-arg POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
-          --build-arg POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
-          -t ghcr.io/${{ github.repository }}/backend:latest ./backend \
           --label "org.opencontainers.image.source=https://github.com/jaroslavciza/reminder" \
           --label "org.opencontainers.image.description=Docker container with Backend FastAPI"         
         docker push ghcr.io/${{ github.repository }}/backend:latest
