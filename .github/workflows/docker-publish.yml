@@ -40,12 +40,12 @@ jobs:
 
     - name: Build and push frontend Docker image
       run: |
-        docker build -t ghcr.io/${{ github.repository }}/frontend:latest ./frontend --label "org.opencontainers.image.source=https://github.com/jaroslavciza/${{ github.repository }}" --label "org.opencontainers.image.description=Docker container with Frontend NGINX"
+        docker build -t ghcr.io/${{ github.repository }}/frontend:latest ./frontend --label "org.opencontainers.image.source=https://github.com/jaroslavciza/reminder" --label "org.opencontainers.image.description=Docker container with Frontend NGINX"
         docker push ghcr.io/${{ github.repository }}/frontend:latest
 
     - name: Build and push backend Docker image
       run: |
-        docker build -t ghcr.io/${{ github.repository }}/backend:latest ./backend --label "org.opencontainers.image.source=https://github.com/jaroslavciza/${{ github.repository }}" --label "org.opencontainers.image.description=Docker container with Backend FastAPI"         
+        docker build -t ghcr.io/${{ github.repository }}/backend:latest ./backend --label "org.opencontainers.image.source=https://github.com/jaroslavciza/reminder" --label "org.opencontainers.image.description=Docker container with Backend FastAPI"         
         docker push ghcr.io/${{ github.repository }}/backend:latest
 
     # - name: Run backend tests
