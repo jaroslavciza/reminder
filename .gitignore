@@ -1,7 +1,6 @@
 test.bat
 .vscode
 .env
-.env.*
 
 #development sqlite
 reminder.db
