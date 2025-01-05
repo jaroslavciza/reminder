@@ -1,0 +1,61 @@
+name: Docker Build & Publish to GitHub Docker Registry
+
+on:
+    push:
+        branches:
+            - main  
+    pull_request:
+        branches:
+            - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v4  # Klonování repozitáře do běžícího runneru
+
+    - name: Set DATABASE_URL environment variable #nasledne se pouzije pri staveni docker containeru
+      run: |
+        echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV      
+
+    - name: Log in to GitHub Container Registry
+      run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+    - name: Build and push frontend Docker image
+      run: |
+        docker build -t ghcr.io/${{ github.repository }}/frontend:latest ./frontend --label "org.opencontainers.image.source=https://github.com/jaroslavciza/${{ github.repository }}" --label "org.opencontainers.image.description=Docker container with Frontend NGINX"
+        docker push ghcr.io/${{ github.repository }}/frontend:latest
+
+    - name: Build and push backend Docker image
+      run: |
+        docker build -t ghcr.io/${{ github.repository }}/backend:latest ./backend --label "org.opencontainers.image.source=https://github.com/jaroslavciza/${{ github.repository }}" --label "org.opencontainers.image.description=Docker container with Backend FastAPI"         
+        docker push ghcr.io/${{ github.repository }}/backend:latest
+
+    - name: Run backend tests
+      run: |
+        docker run --env POSTGRES_USER=${{ secrets.POSTGRES_USER }} --env POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} --env POSTGRES_DB=${{ secrets.POSTGRES_DB }} ghcr.io/${{ github.repository }}/backend:latest pytest        
+
+    # nefunkční endpoint na portaineru - odebraná funkcionalita?
+    # - name: Redeploy Stack on Portainer
+    #   run: |
+    #     curl -X POST "https://portainer.ciza.eu/api/stacks/8/update?force=true" \
+    #       -H "X-API-Key: ${{ secrets.PORTAINER_TOKEN }}" \
+    #       -H "Content-Type: application/json" \
+    #       -d @docker-compose.yml     
