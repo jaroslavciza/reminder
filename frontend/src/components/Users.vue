@@ -11,7 +11,7 @@
             const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
             const access_token = userStore.accessToken;
 
-            const response = await fetch(apiBaseUrl + '/users/', {
+            const response = await fetch(apiBaseUrl + '/users', { //BEZ KONCOVEHO LOMITKA, jinak FastAPI presmerovava na adresu bez lomitka, ale na HTTP
                 headers: {
                     // Authorization: 'Bearer ' + userStore.JWTtoken 
                     Authorization: `Bearer ${access_token}`,
