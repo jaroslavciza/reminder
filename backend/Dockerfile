@@ -19,4 +19,4 @@ ENV DATABASE_URL=${DATABASE_URL}
 EXPOSE 8000
 
 # Spuštění FastAPI aplikace pomocí uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
