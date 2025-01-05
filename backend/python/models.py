@@ -1,5 +1,4 @@
-from sqlalchemy import create_engine, Column, String, Boolean
-from sqlalchemy.orm import deferred
+from sqlalchemy import Column, String, LargeBinary, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 
 from pydantic import BaseModel, EmailStr
@@ -13,7 +12,7 @@ class User(Base):
         return f"User: {self.email}"
     
     email = Column(String(255), primary_key=True)
-    password = Column(String(255), nullable=False)
+    password = Column(LargeBinary, nullable=False)
     firstName = Column(String(255), nullable=True)
     lastName = Column(String(255), nullable=True)
     disabled = Column(Boolean, default=False, nullable=False)
