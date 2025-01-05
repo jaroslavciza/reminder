@@ -27,7 +27,7 @@
     <header>
         <nav>
             <RouterLink to="/">Reminder</RouterLink>
-            <RouterLink to="/documents">Dokumenty</RouterLink>
+            <!-- <RouterLink to="/documents">Dokumenty</RouterLink> -->
             <RouterLink to="/users" v-if="userStore.isLogged">Uživatelé</RouterLink>
         </nav>        
 
@@ -55,27 +55,33 @@
         /* padding: 0 2rem 0 2rem; */
     }
     #app {
+        /* display: flex;
+        flex-direction: column; */
         
     }
-
+    
     header {
         height: var(--topHeight);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0 2rem 0 2rem;
+        padding: 0 1.2rem 0 1.2rem;
         background-color: var(--bs-secondary-bg);
     }
-
+    
     .header-right {
         display: flex;
         gap: 15px;
         align-items: center;
     }
-
+    
     .main {
-        padding: 0 2rem 0 2rem;
-        /* min-height: calc(100svh - var(--topHeight)); */
+        padding: 0 1.2rem 0 1.2rem;
+        max-height: calc(100svh - var(--topHeight));
+        max-width: 100svw;
+        /* max-height: 100svw; */
+        overflow-x: auto;
+        overflow-y: auto;
     }
 
     nav {
