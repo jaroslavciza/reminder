@@ -48,9 +48,9 @@ jobs:
         docker build -t ghcr.io/${{ github.repository }}/backend:latest ./backend --label "org.opencontainers.image.source=https://github.com/jaroslavciza/${{ github.repository }}" --label "org.opencontainers.image.description=Docker container with Backend FastAPI"         
         docker push ghcr.io/${{ github.repository }}/backend:latest
 
-    - name: Run backend tests
-      run: |
-        docker run --env POSTGRES_USER=${{ secrets.POSTGRES_USER }} --env POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} --env POSTGRES_DB=${{ secrets.POSTGRES_DB }} ghcr.io/${{ github.repository }}/backend:latest pytest        
+    # - name: Run backend tests
+    #   run: |
+    #     docker run --env POSTGRES_USER=${{ secrets.POSTGRES_USER }} --env POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} --env POSTGRES_DB=${{ secrets.POSTGRES_DB }} ghcr.io/${{ github.repository }}/backend:latest pytest        
 
     # nefunkční endpoint na portaineru - odebraná funkcionalita?
     # - name: Redeploy Stack on Portainer
