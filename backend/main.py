@@ -1,6 +1,6 @@
+import os
 from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
-import os
 from fastapi import FastAPI, Depends, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -16,7 +16,7 @@ from jwt.exceptions import InvalidTokenError
 
 #from python.database import createTables, addUser, getUser, isUserAthenticated
 import python.database as db
-from python.models import User, Token, TokenData, RegisterUser
+from python.models import User, Token, TokenData, FormRegisterUser, FormAddDocument
 
 # import logging
 
@@ -41,6 +41,7 @@ app = FastAPI() # je postavený na async def takže už asyncio nemusím na asyn
 
 # Vytvoření tabulek
 db.createTables()
+db.fill_catalogs() #naplnění číselníků
 
 # kvuli CORS
 origins = [
@@ -145,7 +146,7 @@ async def login_via_frontend (formData: OAuth2PasswordRequestForm = Depends()):
     return await login_for_access_token(formData)
 
 @app.post("/register")
-async def register_new_account (formData: RegisterUser):
+async def register_new_account (formData: FormRegisterUser):
     hasshedPassword = db.getPasswordHash(formData.password)
     user = db.addUser(formData.email, hasshedPassword, formData.firstName, formData.lastName, False)
 
@@ -160,7 +161,7 @@ async def register_new_account (formData: RegisterUser):
     return {"success": True, "message": user["message"], "access_token": access_token}
 
 @app.get("/users")
-async def getUsers(currentUser: User = Depends(getCurrentActiveUser)):
+async def get_users(currentUser: User = Depends(getCurrentActiveUser)):
     if not currentUser:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
@@ -170,3 +171,36 @@ async def getUsers(currentUser: User = Depends(getCurrentActiveUser)):
         return None
 
     return users
+
+@app.get("/document_types")
+async def get_document_types():
+    document_types = db.get_document_types()
+
+    if not document_types:
+        return None
+
+    return document_types
+
+@app.get("/get_documents")
+async def get_my_documents(current_user: User = Depends(getCurrentActiveUser)):
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    documents = db.get_documents_for_id(current_user.id)
+
+    if not documents:
+        return None
+    
+    return documents
+
+@app.post("/add_document")
+async def add_document(formData: FormAddDocument, current_user: User = Depends(getCurrentActiveUser)):
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    document = db.add_document(formData.document_name, formData.document_type, current_user.id, formData.document_date_expiration, formData.document_notify)
+
+    if document:
+        return {"success": True, "message": f"Dokument {formData.document_name} uložen."}
+    return {"success": False, "message": f"Dokument {formData.document_name} se nepodařilo uložit."}
+

@@ -16,7 +16,7 @@
 
     const submit = async (event) => {
         event.preventDefault();
-        userStore.removeAccessToken();
+        userStore.logout();
 
         const formData = new FormData();
         formData.append("username", email.value);
@@ -53,11 +53,11 @@
             const data = await response.json();
             if (data.access_token) {
                 userStore.setAccessToken(data.access_token);
+                toast.success("Přihlášení proběhlo úspěšně.");
                 router.go(-1); //vrátí se na předchozí stránku před přihlášením
-                toast.success("Přihlášení úspěšné, vítejte...");
             } else {
-                toast.error("Neplatné příhlášení...");
-                console.log ("Neplatné příhlášení...");
+                toast.error("Neplatné příhlášení.");
+                console.log ("Neplatné příhlášení.");
             }
         } catch (error) {
             console.error('Chyba:', error.message);
@@ -99,8 +99,6 @@
 
     .loginBox {
         width: 300px;
-        height: 350px;
-        /* background-color: rgba(255,255,255,0.1); */
         background-color: var(--bs-tertiary-bg);
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         border-radius: 10px;
@@ -110,8 +108,6 @@
     }
 
     .loginForm {
-        /* padding: 1rem 2rem 0 2rem; */
-        /* max-width: 1000px; */
         padding-top: 1.5rem;;
         display: flex;
         gap: 15px;

@@ -96,8 +96,6 @@
 
     .registerBox {
         width: 300px;
-        height: 385px;
-        /* background-color: rgba(255,255,255,0.1); */
         background-color: var(--bs-tertiary-bg);
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         border-radius: 10px;
@@ -107,8 +105,6 @@
     }
 
     .registerForm {
-        /* padding: 1rem 2rem 0 2rem; */
-        /* max-width: 1000px; */
         padding-top: 1.5rem;;
         display: flex;
         gap: 15px;

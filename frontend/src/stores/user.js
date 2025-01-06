@@ -3,8 +3,7 @@ import { ref, computed } from 'vue'
 
 export const useUserStore = defineStore('user', () => {
     const isDarkMode = ref(null);
-    // const isLogged = ref(false);
-    // const JWTtoken = ref (null); // lepsi bude cookie, kvuli persistenci, prozatim takto
+    const logged_user = ref(null);
 
     const accessToken = ref(localStorage.getItem('accessToken') || null);  // Načteme token z localstorage(kvuli persistenci pri refresh), pokud existuje
     const isLogged = computed(() => !!accessToken.value);  // Kontrola, zda je uživatel přihlášený
@@ -42,10 +41,10 @@ export const useUserStore = defineStore('user', () => {
         localStorage.setItem('accessToken', token);  // Uložíme do localStorage
     }; 
 
-    const removeAccessToken = () => {
+    const logout = () => {
         accessToken.value = null;
         localStorage.removeItem('accessToken');  // Smažeme z localStorage
       };      
 
-    return { isDarkMode, initializeTheme, toggleDarkMode, isLogged, setAccessToken, removeAccessToken, accessToken}
+    return { isDarkMode, initializeTheme, toggleDarkMode, isLogged, setAccessToken, logout, logged_user, accessToken}
 });

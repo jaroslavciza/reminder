@@ -1,5 +1,8 @@
 <script setup>
     import { ref, onMounted } from 'vue';
+
+    // import { useToast } from "vue-toastification";
+    // const toast = useToast()
     
     import { useUserStore } from '../stores/user';
     const userStore = useUserStore();      
@@ -17,9 +20,15 @@
                     Authorization: `Bearer ${access_token}`,
                 }
             });
+            
             if (!response.ok) {
-                throw new Error(`Response status: ${response.status}`);
-            }
+                if (response.status == 401) {
+                    //toast.error("Přihlášení vypršelo.")
+                    userStore.logout();
+                }
+                const errorDetails = await response.text();
+                throw new Error(`${errorDetails}`);
+            };
 
             const json = await response.json();
             //console.log(json);
